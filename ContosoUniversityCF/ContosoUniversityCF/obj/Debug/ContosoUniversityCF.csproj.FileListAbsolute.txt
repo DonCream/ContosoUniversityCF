@@ -1,3 +1,4 @@
+C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\bin\WebGrease.dll
 C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\bin\ContosoUniversityCF.dll.config
 C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\bin\ContosoUniversityCF.dll
 C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\bin\ContosoUniversityCF.pdb
@@ -28,7 +29,6 @@ C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\Conto
 C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\bin\System.Web.WebPages.Deployment.dll
 C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\bin\System.Web.WebPages.dll
 C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\bin\System.Web.WebPages.Razor.dll
-C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\bin\WebGrease.dll
 C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\bin\PagedList.xml
 C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\bin\PagedList.Mvc.xml
 C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\bin\System.Web.Helpers.xml
@@ -54,6 +54,6 @@ C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\Conto
 C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\bin\Microsoft.Owin.Security.Google.xml
 C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\bin\Microsoft.Owin.Security.Twitter.xml
 C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
-C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\obj\Debug\ContosoUniversityCF.csprojResolveAssemblyReference.cache
 C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\obj\Debug\ContosoUniversityCF.dll
 C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\obj\Debug\ContosoUniversityCF.pdb
+C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\obj\Debug\ContosoUniversityCF.csprojResolveAssemblyReference.cache
