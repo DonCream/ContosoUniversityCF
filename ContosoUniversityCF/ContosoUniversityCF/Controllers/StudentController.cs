@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using ContosoUniversityCF.DAL;
 using ContosoUniversityCF.Models;
@@ -176,7 +174,7 @@ namespace ContosoUniversityCF.Controllers
             catch (DataException/* dex */)
             {
                 //Log the error (uncomment dex variable name and add a line here to write a log.
-                return RedirectToAction("Delete", new { id = id, saveChangesError = true });
+                return RedirectToAction("Delete", new {id, saveChangesError = true });
             }
             return RedirectToAction("Index");
         }
