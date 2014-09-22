@@ -1,6 +1,7 @@
-﻿@model ContosoUniversityCF.ViewModels.InstructorIndexData
+﻿@using ContosoUniversityCF.Models
+@model ContosoUniversityCF.ViewModels.InstructorIndexData
 
-@{ 
+@{
     ViewBag.Title = "Instructors";
 }
 <h2>Instructors</h2>
@@ -13,11 +14,16 @@
         <th>First Name</th>
         <th>Hire Date</th>
         <th>Office</th>
+        <th>Courses</th>
         <th></th>
     </tr>
-    @foreach (var item in Model.Instructors)
+    @foreach (Instructor item in Model.Instructors)
     {
-        string selectedRow = ""; if (item.Id == ViewBag.InstructorId) { selectedRow = "success"; }
+        string selectedRow = "";
+        if (item.Id == ViewBag.InstructorId)
+        {
+            selectedRow = "success";
+        }
         <tr class="@selectedRow">
             <td>
                 @Html.DisplayFor(modelItem => item.LastName)
@@ -29,18 +35,28 @@
                 @Html.DisplayFor(modelItem => item.HireDate)
             </td>
             <td>
-                 @if (item.OfficeAssignment != null)
-                       { @item.OfficeAssignment.Location } 
+                @if (item.OfficeAssignment != null)
+                {
+                    @item.OfficeAssignment.Location
+                }
             </td>
             <td>
-                @Html.ActionLink("Select", "Index", new { id = item.Id }) |
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                @{
+
+                    foreach (Course course in item.Courses)
+                    {
+                        @course.CourseId @: @course.Title <br />
+                    }
+                }
+            </td>
+            <td>
+                @Html.ActionLink("Select", "Index", new {id = item.Id}) |
+                @Html.ActionLink("Edit", "Edit", new {id = item.Id}) |
+                @Html.ActionLink("Details", "Details", new {id = item.Id}) |
+                @Html.ActionLink("Delete", "Delete", new {id = item.Id})
             </td>
         </tr>
     }
-
 </table>
 @if (Model.Courses != null)
 {
@@ -52,7 +68,7 @@
             <th>Title</th>
             <th>Department</th>
         </tr>
-        @foreach (var item in Model.Courses)
+        @foreach (Course item in Model.Courses)
         {
             string selectedRow = "";
             if (item.CourseId == ViewBag.CourseId)
@@ -61,7 +77,7 @@
             }
             <tr class="@selectedRow">
                 <td>
-                    @Html.ActionLink("Select", "Index", new { courseId = item.CourseId})
+                    @Html.ActionLink("Select", "Index", new {courseId = item.CourseId})
                 </td>
                 <td>
                     @item.CourseId
@@ -86,7 +102,7 @@
             <th>Name</th>
             <th>Grade</th>
         </tr>
-        @foreach (var item in Model.Enrollments)
+        @foreach (Enrollment item in Model.Enrollments)
         {
             <tr>
                 <td>

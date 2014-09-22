@@ -1,20 +1,21 @@
-﻿using ContosoUniversityCF.DAL;
-using ContosoUniversityCF.Models;
-using System.Data.Entity;
+﻿using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
+using ContosoUniversityCF.DAL;
+using ContosoUniversityCF.Models;
 
 namespace ContosoUniversityCF.Controllers
 {
     public class CourseController : Controller
     {
-        private SchoolContext db = new SchoolContext();
+        private readonly SchoolContext _db = new SchoolContext();
 
         // GET: Courses
         public ActionResult Index()
         {
-            var courses = db.Courses.Include(c => c.Department);
+            IQueryable<Course> courses = _db.Courses.Include(c => c.Department);
             return View(courses.ToList());
         }
 
@@ -25,7 +26,7 @@ namespace ContosoUniversityCF.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Course course = db.Courses.Find(id);
+            Course course = _db.Courses.Find(id);
             if (course == null)
             {
                 return HttpNotFound();
@@ -36,7 +37,7 @@ namespace ContosoUniversityCF.Controllers
         // GET: Courses/Create
         public ActionResult Create()
         {
-            ViewBag.DepartmentId = new SelectList(db.Departments, "DepartmentId", "Name");
+            PopulateDepartmentsDropDownList();
             return View();
         }
 
@@ -47,14 +48,22 @@ namespace ContosoUniversityCF.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "CourseId,Title,Credits,DepartmentId")] Course course)
         {
-            if (ModelState.IsValid)
+            try
             {
-                db.Courses.Add(course);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    _db.Courses.Add(course);
+                    _db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
             }
-
-            ViewBag.DepartmentId = new SelectList(db.Departments, "DepartmentId", "Name", course.DepartmentId);
+            catch (RetryLimitExceededException /* dex */)
+            {
+                //Log the error (uncomment dex variable name and add a line here to write a log.) ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator."); } PopulateDepartmentsDropDownList(course.DepartmentID);
+                ModelState.AddModelError("",
+                    "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+            }
+            PopulateDepartmentsDropDownList(course.DepartmentId);
             return View(course);
         }
 
@@ -65,12 +74,12 @@ namespace ContosoUniversityCF.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Course course = db.Courses.Find(id);
+            Course course = _db.Courses.Find(id);
             if (course == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.DepartmentId = new SelectList(db.Departments, "DepartmentId", "Name", course.DepartmentId);
+            PopulateDepartmentsDropDownList(course.DepartmentId);
             return View(course);
         }
 
@@ -79,26 +88,47 @@ namespace ContosoUniversityCF.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "CourseId,Title,Credits,DepartmentId")] Course course)
+        public ActionResult Edit
+            ([Bind(Include = "CourseId,Title,Credits,DepartmentId")] Course course)
         {
-            if (ModelState.IsValid)
+            try
             {
-                db.Entry(course).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    _db.Entry(course).State = EntityState.Modified;
+                    _db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
             }
-            ViewBag.DepartmentId = new SelectList(db.Departments, "DepartmentId", "Name", course.DepartmentId);
+            catch (RetryLimitExceededException /* dex */)
+            {
+                //Log the error (uncomment dex variable name and add a line here to write a log.) 
+                ModelState.AddModelError("",
+                    "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+            }
+            PopulateDepartmentsDropDownList(course.DepartmentId);
             return View(course);
         }
 
+        private void PopulateDepartmentsDropDownList(object selectedDepartment = null)
+        {
+            IOrderedQueryable<Department> departmentsQuery = from d in _db.Departments
+                orderby d.Name
+                select d;
+            ViewBag.DepartmentId = new SelectList(departmentsQuery, "DepartmentId", "Name", selectedDepartment);
+        }
+
         // GET: Courses/Delete/5
-        public ActionResult Delete(int? id)
+        public
+            ActionResult Delete
+            (int?
+                id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Course course = db.Courses.Find(id);
+            Course course = _db.Courses.Find(id);
             if (course == null)
             {
                 return HttpNotFound();
@@ -107,21 +137,30 @@ namespace ContosoUniversityCF.Controllers
         }
 
         // POST: Courses/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        [
+            HttpPost,
+            ActionName("Delete")]
+        [
+            ValidateAntiForgeryToken]
+        public
+        ActionResult DeleteConfirmed
+            (int
+                id)
         {
-            Course course = db.Courses.Find(id);
-            db.Courses.Remove(course);
-            db.SaveChanges();
+            Course course = _db.Courses.Find(id);
+            _db.Courses.Remove(course);
+            _db.SaveChanges();
             return RedirectToAction("Index");
         }
 
-        protected override void Dispose(bool disposing)
+        protected override
+            void Dispose
+            (bool
+                disposing)
         {
             if (disposing)
             {
-                db.Dispose();
+                _db.Dispose();
             }
             base.Dispose(disposing);
         }

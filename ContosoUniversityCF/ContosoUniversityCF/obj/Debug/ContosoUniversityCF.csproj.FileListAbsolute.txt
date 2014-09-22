@@ -54,5 +54,6 @@ C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\Conto
 C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\bin\Microsoft.Owin.Security.Google.xml
 C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\bin\Microsoft.Owin.Security.Twitter.xml
 C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
+C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\obj\Debug\ContosoUniversityCF.csprojResolveAssemblyReference.cache
 C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\obj\Debug\ContosoUniversityCF.dll
 C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\obj\Debug\ContosoUniversityCF.pdb
