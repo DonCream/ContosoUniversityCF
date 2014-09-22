@@ -2,6 +2,7 @@
 using Owin;
 
 [assembly: OwinStartupAttribute(typeof(ContosoUniversityCF.Startup))]
+
 namespace ContosoUniversityCF
 {
     public partial class Startup

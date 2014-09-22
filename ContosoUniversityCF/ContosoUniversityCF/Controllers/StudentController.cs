@@ -1,12 +1,12 @@
-﻿using System;
+﻿using ContosoUniversityCF.DAL;
+using ContosoUniversityCF.Models;
+using PagedList;
+using System;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
-using ContosoUniversityCF.DAL;
-using ContosoUniversityCF.Models;
-using PagedList;
 
 namespace ContosoUniversityCF.Controllers
 {
@@ -23,12 +23,12 @@ namespace ContosoUniversityCF.Controllers
             {
                 page = 1;
             }
-            else 
-            { 
-                searchString = currentFilter; 
+            else
+            {
+                searchString = currentFilter;
             }
             ViewBag.CurrentFilter = searchString;
-            
+
             var students = from s in db.Students
                            select s;
             if (!String.IsNullOrEmpty(searchString))
@@ -42,18 +42,21 @@ namespace ContosoUniversityCF.Controllers
                 case "name_desc":
                     students = students.OrderByDescending(s => s.LastName);
                     break;
+
                 case "Date":
                     students = students.OrderBy(s => s.EnrollmentDate);
                     break;
+
                 case "date_desc":
                     students = students.OrderByDescending(s => s.EnrollmentDate);
                     break;
+
                 default:
                     students = students.OrderBy(s => s.LastName);
                     break;
             }
-            int pageSize = 3; 
-            int pageNumber = (page ?? 1); 
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
             return View(students.ToPagedList(pageNumber, pageSize));
         }
 
@@ -79,7 +82,7 @@ namespace ContosoUniversityCF.Controllers
         }
 
         // POST: Student/Create
-        // To protect from attacks, please enable the specific properties you want to bind to, for 
+        // To protect from attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -118,7 +121,7 @@ namespace ContosoUniversityCF.Controllers
         }
 
         // POST: Student/Edit/5
-        // To protect from "" attacks, please enable the specific properties you want to bind to, for 
+        // To protect from "" attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -141,6 +144,7 @@ namespace ContosoUniversityCF.Controllers
             }
             return View(student);
         }
+
         // GET: Student/Delete/5
         public ActionResult Delete(int? id, bool? saveChangesError = false)
         {
@@ -174,7 +178,7 @@ namespace ContosoUniversityCF.Controllers
             catch (DataException/* dex */)
             {
                 //Log the error (uncomment dex variable name and add a line here to write a log.
-                return RedirectToAction("Delete", new {id, saveChangesError = true });
+                return RedirectToAction("Delete", new { id, saveChangesError = true });
             }
             return RedirectToAction("Index");
         }

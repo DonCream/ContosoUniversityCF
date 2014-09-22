@@ -1,7 +1,7 @@
-﻿@model PagedList.IPagedList<ContosoUniversityCF.Models.Student> 
-@using PagedList.Mvc; 
+﻿@model PagedList.IPagedList<ContosoUniversityCF.Models.Student>
+@using PagedList.Mvc;
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
-@{ 
+@{
     ViewBag.Title = "Students";
 }
 <h2>Students</h2>
@@ -50,8 +50,8 @@
         </tr>
     }
 </table>
-<br /> 
-Page 
-@(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of 
+<br />
+Page
+@(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of
 @Model.PageCount
 @Html.PagedListPager(Model, page => Url.Action("Index", new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))

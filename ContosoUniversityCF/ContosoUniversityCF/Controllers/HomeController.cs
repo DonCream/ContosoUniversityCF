@@ -1,8 +1,7 @@
-﻿using System.Linq;
-using System.Web.Mvc;
-using ContosoUniversityCF.DAL;
+﻿using ContosoUniversityCF.DAL;
 using ContosoUniversityCF.ViewModels;
-
+using System.Linq;
+using System.Web.Mvc;
 
 namespace ContosoUniversityCF.Controllers
 {
@@ -32,6 +31,7 @@ namespace ContosoUniversityCF.Controllers
 
             return View();
         }
+
         protected override void Dispose(bool disposing)
         {
             db.Dispose();

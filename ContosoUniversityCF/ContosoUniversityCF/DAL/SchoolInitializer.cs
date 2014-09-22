@@ -1,9 +1,8 @@
-﻿using System;
+﻿using ContosoUniversityCF.Models;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using ContosoUniversityCF.Models;
 using System.Data.Entity.Migrations;
-
+using System.Linq;
 
 namespace ContosoUniversityCF.DAL
 {
@@ -11,7 +10,7 @@ namespace ContosoUniversityCF.DAL
     {
         protected override void Seed(SchoolContext context)
         {
-             var students = new List<Student>
+            var students = new List<Student>
             {
                 new Student
                 {
