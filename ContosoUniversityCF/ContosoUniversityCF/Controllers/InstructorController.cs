@@ -1,7 +1,4 @@
-﻿using ContosoUniversityCF.DAL;
-using ContosoUniversityCF.Models;
-using ContosoUniversityCF.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
@@ -9,6 +6,9 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
+using ContosoUniversityCF.DAL;
+using ContosoUniversityCF.Models;
+using ContosoUniversityCF.ViewModels;
 
 namespace ContosoUniversityCF.Controllers
 {
@@ -32,22 +32,19 @@ namespace ContosoUniversityCF.Controllers
                 ViewBag.InstructorId = id.Value;
                 viewModel.Courses = viewModel.Instructors.Single(i => i.Id == id.Value).Courses;
             }
-            if (courseId != null)
-            {
-                ViewBag.CourseId = courseId.Value;
-                // Lazy loading
-                //viewModel.Enrollments = viewModel.Courses.Where(
-                // x => x.CourseID == courseID).Single().Enrollments;
-                // Explicit loading
-                Course selectedCourse = viewModel.Courses.Single(x => x.CourseId == courseId);
-                _db.Entry(selectedCourse).Collection(x => x.Enrollments).Load();
+            if (courseId == null) return View(viewModel);
+            ViewBag.CourseId = courseId.Value;
+            // Was Lazy loading
+            viewModel.Enrollments = viewModel.Courses.Single(x => x.CourseId == courseId).Enrollments;
+            // Was Explicit loading
+            Course selectedCourse = viewModel.Courses.Single(x => x.CourseId == courseId);
+            _db.Entry(selectedCourse).Collection(x => x.Enrollments).Load();
 
-                foreach (Enrollment enrollment in selectedCourse.Enrollments)
-                {
-                    _db.Entry(enrollment).Reference(x => x.Student).Load();
-                }
-                viewModel.Enrollments = selectedCourse.Enrollments;
+            foreach (Enrollment enrollment in selectedCourse.Enrollments)
+            {
+                _db.Entry(enrollment).Reference(x => x.Student).Load();
             }
+            viewModel.Enrollments = selectedCourse.Enrollments;
             return View(viewModel);
         }
 
@@ -69,7 +66,7 @@ namespace ContosoUniversityCF.Controllers
         // GET: Instructor/Create
         public ActionResult Create()
         {
-            var instructor = new Instructor { Courses = new List<Course>() };
+            var instructor = new Instructor {Courses = new List<Course>()};
             PopulateAssignedCourseData(instructor);
             return View();
         }
@@ -79,12 +76,14 @@ namespace ContosoUniversityCF.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "LastName,FirstMidName,HireDate,OfficeAssignment")]Instructor instructor, string[] selectedCourses)
+        public ActionResult Create(
+            [Bind(Include = "LastName,FirstMidName,HireDate,OfficeAssignment")] Instructor instructor,
+            string[] selectedCourses)
         {
             if (selectedCourses != null)
             {
                 instructor.Courses = new List<Course>();
-                foreach (var courseToAdd in selectedCourses.Select(course => _db.Courses.Find(int.Parse(course))))
+                foreach (Course courseToAdd in selectedCourses.Select(course => _db.Courses.Find(int.Parse(course))))
                 {
                     instructor.Courses.Add(courseToAdd);
                 }
@@ -121,7 +120,7 @@ namespace ContosoUniversityCF.Controllers
         {
             DbSet<Course> allCourses = _db.Courses;
             var instructorCourses = new HashSet<int>(instructor.Courses.Select(c => c.CourseId));
-            var viewModel = allCourses.Select(course => new AssignedCourseData
+            List<AssignedCourseData> viewModel = allCourses.Select(course => new AssignedCourseData
             {
                 CourseId = course.CourseId,
                 Title = course.Title,
@@ -145,7 +144,7 @@ namespace ContosoUniversityCF.Controllers
                 .Include(i => i.OfficeAssignment).Single(i => i.Id == id);
 
             if (TryUpdateModel(instructorToUpdate, "",
-                new[] { "LastName", "FirstMidName", "HireDate", "OfficeAssignment" }))
+                new[] {"LastName", "FirstMidName", "HireDate", "OfficeAssignment"}))
             {
                 try
                 {
@@ -178,7 +177,7 @@ namespace ContosoUniversityCF.Controllers
             }
             var selectedCoursesHs = new HashSet<string>(selectedCourses);
             var instructorCourses = new HashSet<int>(instructorToUpdate.Courses.Select(c => c.CourseId));
-            foreach (var course in _db.Courses)
+            foreach (Course course in _db.Courses)
             {
                 if (selectedCoursesHs.Contains(course.CourseId.ToString(CultureInfo.InvariantCulture)))
                 {
