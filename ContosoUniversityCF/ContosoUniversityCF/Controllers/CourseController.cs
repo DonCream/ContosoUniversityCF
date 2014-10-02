@@ -1,5 +1,4 @@
-﻿using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
+﻿using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
@@ -10,27 +9,19 @@ namespace ContosoUniversityCF.Controllers
 {
     public class CourseController : Controller
     {
-        private readonly SchoolContext _db = new SchoolContext();
+        private readonly UnitOfWork _unitOfWork = new UnitOfWork();
 
         // GET: Courses
-        public ActionResult Index()
+        public ViewResult Index()
         {
-            IQueryable<Course> courses = _db.Courses.Include(c => c.Department);
+            var courses = _unitOfWork.CourseRepository.Get(includeProperties: "Department");
             return View(courses.ToList());
         }
 
         // GET: Courses/Details/5
-        public ActionResult Details(int? id)
+        public ViewResult Details(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Course course = _db.Courses.Find(id);
-            if (course == null)
-            {
-                return HttpNotFound();
-            }
+            var course = _unitOfWork.CourseRepository.GetById(id);
             return View(course);
         }
 
@@ -52,8 +43,8 @@ namespace ContosoUniversityCF.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    _db.Courses.Add(course);
-                    _db.SaveChanges();
+                    _unitOfWork.CourseRepository.Insert(course);
+                    _unitOfWork.Save();
                     return RedirectToAction("Index");
                 }
             }
@@ -74,7 +65,7 @@ namespace ContosoUniversityCF.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Course course = _db.Courses.Find(id);
+            Course course = _unitOfWork.CourseRepository.GetById(id);
             if (course == null)
             {
                 return HttpNotFound();
@@ -95,14 +86,14 @@ namespace ContosoUniversityCF.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    _db.Entry(course).State = EntityState.Modified;
-                    _db.SaveChanges();
+                    _unitOfWork.CourseRepository.Update(course);
+                    _unitOfWork.Save();
                     return RedirectToAction("Index");
                 }
             }
             catch (RetryLimitExceededException /* dex */)
             {
-                //Log the error (uncomment dex variable name and add a line here to write a log.) 
+                //Log the error (uncomment dex variable name and add a line here to write a log.)
                 ModelState.AddModelError("",
                     "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
             }
@@ -112,23 +103,19 @@ namespace ContosoUniversityCF.Controllers
 
         private void PopulateDepartmentsDropDownList(object selectedDepartment = null)
         {
-            IOrderedQueryable<Department> departmentsQuery = from d in _db.Departments
-                orderby d.Name
-                select d;
+            var departmentsQuery = _unitOfWork.DepartmentRepository.Get(
+                orderBy: q => q.OrderBy(d => d.Name));
             ViewBag.DepartmentId = new SelectList(departmentsQuery, "DepartmentId", "Name", selectedDepartment);
         }
 
         // GET: Courses/Delete/5
-        public
-            ActionResult Delete
-            (int?
-                id)
+        public ActionResult Delete(int ? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Course course = _db.Courses.Find(id);
+            var course = _unitOfWork.CourseRepository.GetById(id);
             if (course == null)
             {
                 return HttpNotFound();
@@ -137,19 +124,13 @@ namespace ContosoUniversityCF.Controllers
         }
 
         // POST: Courses/Delete/5
-        [
-            HttpPost,
-            ActionName("Delete")]
-        [
-            ValidateAntiForgeryToken]
-        public
-        ActionResult DeleteConfirmed
-            (int
-                id)
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
         {
-            Course course = _db.Courses.Find(id);
-            _db.Courses.Remove(course);
-            _db.SaveChanges();
+            _unitOfWork.CourseRepository.GetById(id);
+            _unitOfWork.CourseRepository.Delete(id);
+            _unitOfWork.Save();
             return RedirectToAction("Index");
         }
 
@@ -160,7 +141,7 @@ namespace ContosoUniversityCF.Controllers
         {
             if (disposing)
             {
-                _db.Dispose();
+                _unitOfWork.Dispose();
             }
             base.Dispose(disposing);
         }
