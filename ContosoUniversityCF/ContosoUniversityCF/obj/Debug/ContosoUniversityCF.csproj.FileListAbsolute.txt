@@ -56,3 +56,4 @@ C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\Conto
 C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
 C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\obj\Debug\ContosoUniversityCF.dll
 C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\obj\Debug\ContosoUniversityCF.pdb
+C:\Users\DonCream\Documents\Github\ContosoUniversityCF\ContosoUniversityCF\ContosoUniversityCF\obj\Debug\ContosoUniversityCF.csprojResolveAssemblyReference.cache

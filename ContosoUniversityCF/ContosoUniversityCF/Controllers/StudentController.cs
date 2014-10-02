@@ -3,17 +3,23 @@ using ContosoUniversityCF.Models;
 using PagedList;
 using System;
 using System.Data;
-using System.Data.Entity;
 using System.Linq;
-using System.Net;
 using System.Web.Mvc;
 
 namespace ContosoUniversityCF.Controllers
 {
     public class StudentController : Controller
     {
-        private SchoolContext db = new SchoolContext();
+        private IStudentRepository studentRepository;
 
+        public StudentController()
+        {
+            studentRepository = new StudentRepository(new SchoolContext());
+        }
+        public StudentController(IStudentRepository studentRepository)
+        {
+            this.studentRepository = studentRepository;
+        }
         // GET: Student
         public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
@@ -29,7 +35,7 @@ namespace ContosoUniversityCF.Controllers
             }
             ViewBag.CurrentFilter = searchString;
 
-            var students = from s in db.Students
+            var students = from s in studentRepository.GetStudents()
                            select s;
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -61,13 +67,9 @@ namespace ContosoUniversityCF.Controllers
         }
 
         // GET: Student/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult Details(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Student student = db.Students.Find(id);
+            Student student = studentRepository.GetStudentById(id);
             if (student == null)
             {
                 return HttpNotFound();
@@ -92,8 +94,8 @@ namespace ContosoUniversityCF.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    db.Students.Add(student);
-                    db.SaveChanges();
+                    studentRepository.InsertStudent(student);
+                    studentRepository.Save();
                     return RedirectToAction("Index");
                 }
             }
@@ -106,13 +108,9 @@ namespace ContosoUniversityCF.Controllers
         }
 
         // GET: Student/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Student student = db.Students.Find(id);
+            Student student = studentRepository.GetStudentById(id);
             if (student == null)
             {
                 return HttpNotFound();
@@ -125,14 +123,14 @@ namespace ContosoUniversityCF.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,LastName,FirstMidName,EnrollmentDate")] Student student)
+        public ActionResult Edit([Bind(Include = "Id,LastName,FirstMidName,EnrollmentDate")] Student student)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    db.Entry(student).State = EntityState.Modified;
-                    db.SaveChanges();
+                    studentRepository.UpdateStudent(student);
+                    studentRepository.Save();
                     return RedirectToAction("Index");
                 }
             }
@@ -146,17 +144,13 @@ namespace ContosoUniversityCF.Controllers
         }
 
         // GET: Student/Delete/5
-        public ActionResult Delete(int? id, bool? saveChangesError = false)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            if (saveChangesError.GetValueOrDefault())
-            {
-                ViewBag.ErrorMessage = "Delete failed. Try again, and if the problem persists see your system administrator.";
-            }
-            Student student = db.Students.Find(id);
+        public ActionResult Delete(bool? saveChangesError = false, int id = 0)
+      {
+         if (saveChangesError.GetValueOrDefault())
+         {
+            ViewBag.ErrorMessage = "Delete failed. Try again, and if the problem persists see your system administrator.";
+         }
+            Student student = studentRepository.GetStudentById(id);
             if (student == null)
             {
                 return HttpNotFound();
@@ -171,9 +165,9 @@ namespace ContosoUniversityCF.Controllers
         {
             try
             {
-                Student student = db.Students.Find(id);
-                db.Students.Remove(student);
-                db.SaveChanges();
+                Student student = studentRepository.GetStudentById(id);
+                studentRepository.DeleteStudent(id);
+                studentRepository.Save();
             }
             catch (DataException/* dex */)
             {
@@ -187,7 +181,7 @@ namespace ContosoUniversityCF.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                studentRepository.Dispose();
             }
             base.Dispose(disposing);
         }
